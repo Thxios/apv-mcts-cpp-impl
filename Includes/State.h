@@ -10,14 +10,14 @@ using std::pair;
 
 namespace mcts {
 
-	using Action	= int;
-	using Prob		= double;
+    using Action    = int;
+    using Prob      = double;
     using Reward    = double;
 
-	class StateInterface {
-	public:
-		void	Play(Action action);
-		bool	Terminated();
-	};
+    class StateInterface {
+    public:
+        void    Play(Action action);
+        bool    Terminated();
+    };
 
 }

@@ -24,13 +24,13 @@ namespace mcts {
         Node(Prob prob, Node* parent_=nullptr);
         ~Node();
     
-        void				Expand(vector<pair<Action, Prob>>& prob_distribution);
-        pair<Action, Node*>	Select(double c_puct);
-        void				Update(Reward z);
-        void				ApplyVirtualLoss(int vloss);
-        void				RevertVirtualLoss(int vloss);
-        Node*				LeaveOneChild(Action action);
-        Action				GetOptimalAction();
+        void                Expand(vector<pair<Action, Prob>>& prob_distribution);
+        pair<Action, Node*> Select(double c_puct);
+        void                Update(Reward z);
+        void                ApplyVirtualLoss(int vloss);
+        void                RevertVirtualLoss(int vloss);
+        Node*               LeaveOneChild(Action action);
+        Action              GetOptimalAction();
 
         bool    IsRoot();
         bool    IsLeaf();
@@ -40,14 +40,14 @@ namespace mcts {
 
         Node*   parent;
         
-        friend std::ostream& operator<<(std::ostream& out, Node& node);
-        friend void ShowNode(Node* node, int depth, Action action);
+        friend std::ostream&    operator<<(std::ostream& out, Node& node);
+        friend void             ShowNode(Node* node, int depth, Action action);
 
     private:
-        Prob	P;
-		Reward	W		= 0.;
-        int		N		= 0;
-        double	N_sqrt	= 0.;
+        Prob    P;
+        Reward  W       = 0.;
+        int     N       = 0;
+        double  N_sqrt  = 0.;
 
         vector<pair<Action, Node*>> children;
     };
