@@ -18,7 +18,7 @@ namespace mcts {
     }
 
     template <class State, class Evaluator>
-    Node* MCTS<State, Evaluator>::Select(State& search_state) {
+    Node* MCTS<State, Evaluator>::Select(State* search_state) {
         Node* node = root;
         
         while (!node->IsLeaf()) {
@@ -26,8 +26,8 @@ namespace mcts {
 
             node = child;
             node->ApplyVirtualLoss(param.vloss);
-            search_state.Play(action);
-            if (search_state.Terminated())
+            search_state->Play(action);
+            if (search_state->Terminated())
                 break;
         }
         
@@ -43,6 +43,7 @@ namespace mcts {
             node = node->parent;
             z = -z;
         }
+        node->Update(z);
     }
 
     template <class State, class Evaluator>
@@ -51,12 +52,40 @@ namespace mcts {
         vector<std::unique_ptr<State>> states;
 
         for (int i = 0; i < param.eval_batch; i++) {
-            std::unique_ptr<State> copied(std::make_unique<State>(state));
-            
-            Node* node = Select(*copied);
-
+            states.push_back(state.GetCopy());
+            Node* node = Select(state[i].get());
             leaves.push_back(node);
-            states.push_back(std::move(copied));
+        }
+
+        vector<pair<Reward, vector<pair<Action, Prob>>>>
+            evaluated = evaluator.EvaluateBatch(states);
+
+        for (int i = 0; i < leaves.size(); i++) {
+            leaves[i]->Expand(evaluated[i].second);
+            Backup(leaves[i], evaluated[i].first);
+        }
+    }
+
+    template <class State, class Evaluator>
+    void MCTS<State, Evaluator>::SearchAsync() {
+        vector<Node*> leaves;
+        vector<std::unique_ptr<State>> states;
+
+        vector<std::future<Node*>> threads;
+
+        for (int i = 0; i < param.eval_batch; i++) {
+            states.push_back(std::make_unique<State>(state));
+            threads.push_back(std::async(
+                std::launch::async,
+                &MCTS<State, Evaluator>::Select,
+                this,
+                states[i].get()
+            ));
+        }
+
+        for (int i = 0; i < param.eval_batch; i++) {
+            Node* node = threads[i].get();
+            leaves.push_back(node);
         }
 
         vector<pair<Reward, vector<pair<Action, Prob>>>>

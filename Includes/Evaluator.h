@@ -15,8 +15,8 @@ namespace mcts
         "invalid State type");
 
     public:
-        vector<pair<Reward, vector<pair<Action, Prob>>>>
-            EvaluateBatch(vector<std::unique_ptr<State>>& states);
+        virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
+            EvaluateBatch(vector<std::unique_ptr<State>>& states)   = 0;
     };
 }
 

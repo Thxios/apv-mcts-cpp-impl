@@ -3,6 +3,7 @@
 
 
 #include <memory>
+#include <future>
 
 #include "Param.h"
 #include "Node.h"
@@ -24,12 +25,13 @@ namespace mcts {
         ~MCTS();
 
         void    Search();
+        void    SearchAsync();
         void    Play(Action action);
         Node*   GetRoot();
         Action  GetOptimalAction();
     
     private:
-        Node*   Select(State& search_state);
+        Node*   Select(State* search_state);
         void    Backup(Node* node, Reward z);
 
         State       state;

@@ -16,8 +16,8 @@ namespace mcts {
 
     class StateInterface {
     public:
-        void    Play(Action action);
-        bool    Terminated();
+        virtual void    Play(Action action) = 0;
+        virtual bool    Terminated()        = 0;
     };
 
 }

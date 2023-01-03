@@ -111,13 +111,14 @@ int main() {
     cout << "hello, world!" << endl;
 
     TestState s;
-    Param param;
+    Param param(3, 5, 3);
     TestEvaluator<TestState> eval;
     MCTS<TestState, TestEvaluator<TestState>> tree(s, param, eval);
     
     cout << endl << "Start Search" << endl;
     for (int i = 0; i < 5; i++) {
-        tree.Search();
+        // tree.Search();
+        tree.SearchAsync();
         cout << i << " search done" << endl;
     }
     cout << "Search done" << endl;
