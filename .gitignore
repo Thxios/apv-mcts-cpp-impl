@@ -5,6 +5,7 @@
 *.tar
 *.pt
 *.log
+libtorch
 
 ### C++ ###
 # Prerequisites
