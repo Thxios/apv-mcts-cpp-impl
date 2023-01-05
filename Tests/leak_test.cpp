@@ -6,11 +6,13 @@
 #include <random>
 #include <memory>
 
-#include "State.h"
-#include "Node.h"
-#include "Evaluator.h"
-#include "Tree.h"
-#include "Param.h"
+#include "MCTS/State.h"
+#include "MCTS/Node.h"
+#include "MCTS/Evaluator.h"
+#include "MCTS/Tree.h"
+#include "MCTS/Param.h"
+
+// g++ -std=c++17 -I Includes/ -I Sources/ -pthread Tests/leak_test.cpp Sources/MCTS/Node.cpp 
 
 
 using namespace std;
@@ -32,6 +34,9 @@ public:
     }
     virtual void Play(Action action) {
         moves.push_back(action);
+    }
+    virtual StateInfo State() {
+        return (Terminated() ? B_WIN : ONGOING);
     }
     virtual bool Terminated() {
         return moves.size() >= GAME_LEN;
