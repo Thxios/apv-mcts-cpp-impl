@@ -77,18 +77,6 @@ namespace gomoku {
         return DRAW;
     }
 
-    inline Stone Board::GetColor(Coord pos) {
-        return (board[EMPTY][pos.r][pos.c] ? EMPTY : 
-            (board[BLACK][pos.r][pos.c] ? BLACK : WHITE));
-    }
-    inline Stone Board::GetColor(Action pos) {
-        return GetColor(pos / SIZE, pos % SIZE);
-    }
-    inline Stone Board::GetColor(int r, int c) {
-        return (board[EMPTY][r][c] ? EMPTY : 
-            (board[BLACK][r][c] ? BLACK : WHITE));
-    }
-
     bool Board::FiveInRow(Coord pos, Coord delta) {
         Stone color = GetColor(pos);
         Coord cur;
