@@ -2,6 +2,22 @@
 #include "Gomoku/Server.h"
 
 
+namespace mcts {
+    void DebugLog(MCTS& tree) {
+        std::cout << "root N=" << tree.root->N << std::endl;
+        vector<pair<Action, Node*>> children_cp(tree.root->children);
+        std::sort(children_cp.begin(), children_cp.end(),
+        [](pair<Action, Node*>& a, pair<Action, Node*>& b) {
+            return a.second->N > b.second->N;
+        });
+        for (int i = 0; i < std::min<int>(children_cp.size(), 5); i++) {
+            gomoku::Coord p = gomoku::Action2Coord(children_cp[i].first);
+            std::cout << p << "  \t";
+            std::cout << (*children_cp[i].second) << std::endl;
+        }
+    }
+}
+
 namespace gomoku {
 
     GomokuServer::GomokuServer(
@@ -18,7 +34,7 @@ namespace gomoku {
             tree.Search(computing_budget);
 
             mcts::Action action = tree.GetOptimalAction();
-            tree.DebugLog();
+            DebugLog(tree);
             tree.Play(action);
 
             std::chrono::system_clock::time_point end_time = std::chrono::system_clock::now();

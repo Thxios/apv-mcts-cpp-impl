@@ -28,7 +28,7 @@ namespace mcts {
         Action  GetOptimalAction();
         void    EvaluateQueue();
 
-        void    DebugLog();
+        friend void DebugLog(MCTS& tree);
     
     private:
         Node*   Select(BaseState* search_state);

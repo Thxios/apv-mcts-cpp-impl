@@ -44,6 +44,7 @@ namespace gomoku {
         inline Coord operator* (int multiplier) {
             return Coord(multiplier * r, multiplier * c);
         }
+        friend std::ostream& operator<<(std::ostream& out, Coord &cd);
     };
     
     static const Coord  DELTA[4]    = {
@@ -60,8 +61,6 @@ namespace gomoku {
     inline bool     Inside(int r, int c);
     inline Coord    Action2Coord(Action action);
     inline Action   Coord2Action(Coord coord);
-
-    // template <int SIZE>
 
     class Board : public BaseState {
     public:

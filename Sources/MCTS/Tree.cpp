@@ -1,9 +1,5 @@
 
 #include "MCTS/Tree.h"
-#include <iostream>
-#include <algorithm>
-#include "Gomoku/Board.h"
-using namespace gomoku;
 
 
 namespace mcts {
@@ -95,20 +91,6 @@ namespace mcts {
     
     Action MCTS::GetOptimalAction() {
         return root->GetOptimalAction();
-    }
-    
-    void MCTS::DebugLog() {
-        std::cout << "root N=" << root->N << std::endl;
-        vector<pair<Action, Node*>> children_cp(root->children);
-        std::sort(children_cp.begin(), children_cp.end(),
-        [](pair<Action, Node*>& a, pair<Action, Node*>& b) {
-            return a.second->N > b.second->N;
-        });
-        for (int i = 0; i < std::min<int>(children_cp.size(), 5); i++) {
-            Coord p = Action2Coord(children_cp[i].first);
-            std::cout << children_cp[i].first << " (" << p.r << ", " << p.c << ") ";
-            std::cout << (*children_cp[i].second) << std::endl;
-        }
     }
 }
 

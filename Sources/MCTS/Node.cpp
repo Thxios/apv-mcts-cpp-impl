@@ -62,7 +62,7 @@ namespace mcts {
 
     Action Node::GetOptimalAction() {
         auto visit_comp = [](pair<Action, Node*>& a, pair<Action, Node*>& b) {
-            return a.second->Count() < b.second->Count();
+            return a.second->N < b.second->N;
         };
         return (*std::max_element(children.begin(), children.end(), visit_comp)).first;
     }
@@ -84,12 +84,9 @@ namespace mcts {
     double Node::UCT(double c_puct) {
         return Q() + c_puct * parent->N_sqrt * P / (double)(1 + N);
     }
-
-    int Node::Count() {
-        return N;
-    }
     
     std::ostream& operator<<(std::ostream& out, Node& node) {
+        out << std::fixed;
         out.precision(3);
         out << "Node(";
         out << "P=" << node.P;

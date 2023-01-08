@@ -11,6 +11,7 @@
 
 
 namespace gomoku {
+    using namespace mcts;
 
     class GomokuServer {
     public:
@@ -20,7 +21,7 @@ namespace gomoku {
 
     private:    
         Board   state;
-        mcts::MCTS tree;
+        MCTS    tree;
     };
 
 }

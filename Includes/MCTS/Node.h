@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cassert>
-#include <memory>
 #include <iostream>
 
 using std::vector;
@@ -16,7 +15,6 @@ using std::pair;
 
 
 namespace mcts {
-    // class Node;
 
     class Node {
     public:
@@ -35,7 +33,6 @@ namespace mcts {
         bool    IsLeaf();
         Reward  Q();
         double  UCT(double c_puct);
-        int     Count();
 
         Node*   parent;
 
@@ -46,7 +43,6 @@ namespace mcts {
         double  N_sqrt  = 0.;
         
         friend std::ostream&    operator<<(std::ostream& out, Node& node);
-        friend void             ShowNode(Node* node, int depth, Action action);
 
     private:
     };

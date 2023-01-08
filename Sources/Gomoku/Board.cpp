@@ -4,11 +4,6 @@
 
 namespace gomoku {
 
-    std::ostream& operator<<(std::ostream& out, Coord &cd){
-        out << "(" << cd.r << ", " << cd.c << ")";
-        return out;
-    }
-
     Board::Board() {
         Reset();
     }
@@ -70,7 +65,6 @@ namespace gomoku {
         assert(last_action != -1);
         Coord last_coord = Action2Coord(last_action);
         Stone last_color = GetColor(last_action);
-        assert(last_color != EMPTY);
 
         for (int i = 0; i < 4; i++) {
             if (FiveInRow(last_coord, DELTA[i]))
@@ -153,6 +147,11 @@ namespace gomoku {
             out << "DRAW";
             break;
         }
+        return out;
+    }
+
+    std::ostream& operator<<(std::ostream& out, Coord &cd){
+        out << "(" << cd.r << ", " << cd.c << ")";
         return out;
     }
 }
