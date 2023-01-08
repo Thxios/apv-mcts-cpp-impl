@@ -2,15 +2,18 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <chrono>
 #include <torch/torch.h>
 #include <torch/script.h>
 
 #include "MCTS/Tree.h"
+#include "MCTS/Param.h"
 #include "Gomoku/Board.h"
 #include "Gomoku/Evaluator.h"
 
 
 using namespace std;
+using namespace std::chrono;
 using namespace mcts;
 using namespace gomoku;
 
@@ -61,7 +64,18 @@ int main(int argc, char *argv[]) {
 
     // vector<pair<Reward, vector<pair<Action, Prob>>>> ret = evaluator.EvaluateBatch(to_eval);
     // cout << "done" << endl;
+    Param param(3, 5, 8);
+    MCTS<Board, GomokuEvaluator> tree(bd, evaluator, param);
 
-    MCTS<Board, GomokuEvaluator> tree(bd, evaluator);
+    system_clock::time_point start = system_clock::now();
+    for (int i = 0; i < 1000; i++) {
+        tree.Search();
+    }
+    tree.EvaluateQueue();
+    system_clock::time_point end = system_clock::now();
+    duration<double> elapsed = end - start;
+    cout << "time cost " << elapsed.count() << endl;
+    tree.DebugLog();
+
 }
 

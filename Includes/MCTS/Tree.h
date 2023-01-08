@@ -24,6 +24,8 @@ namespace mcts {
         "invalid State type");
     // static_assert(std::is_base_of<EvaluatorInterface<State>, Evaluator>::value,
     //     "invalid Svaluator type");
+    static_assert(std::is_base_of<EvaluatorInterface, Evaluator>::value,
+        "invalid Svaluator type");
 
     public:
         MCTS(const State& init_state, Evaluator& evaluator_, Param& param_=default_param);
@@ -34,6 +36,9 @@ namespace mcts {
         void    Play(Action action);
         Node*   GetRoot();
         Action  GetOptimalAction();
+        void    EvaluateQueue();
+
+        void    DebugLog();
     
     private:
         Node*   Select(StateInterface* search_state);
@@ -44,9 +49,7 @@ namespace mcts {
         Evaluator&  evaluator;
         Node*       root;
 
-        vector<Node*> node_queue;
-        vector<std::unique_ptr<StateInterface>> state_queue;
-        void    EvaluateQueue();
+        vector<pair<Node*, std::unique_ptr<State>>> eval_queue;
     };
 }
 

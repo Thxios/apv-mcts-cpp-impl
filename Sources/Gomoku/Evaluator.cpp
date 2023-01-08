@@ -29,8 +29,8 @@ namespace gomoku {
     vector<pair<Reward, vector<pair<Action, Prob>>>> 
     GomokuEvaluator::EvaluateBatchInternal(vector<Board*>& states) {
         torch::NoGradGuard();
-        vector<duration<double>> points;
-        system_clock::time_point start = system_clock::now();
+        // vector<duration<double>> points;
+        // system_clock::time_point start = system_clock::now();
 
         vector<torch::Tensor> board_tensor;
         for (auto state_ptr : states) {
@@ -46,10 +46,10 @@ namespace gomoku {
         // inputs.emplace_back(state_tensors);
         inputs.emplace_back(std::move(state_tensors));
         
-        points.emplace_back(system_clock::now() - start);
+        // points.emplace_back(system_clock::now() - start);
 
         torch::jit::IValue out = model.forward(inputs);
-        points.emplace_back(system_clock::now() - start);
+        // points.emplace_back(system_clock::now() - start);
 
         torch::Tensor prob_raw = out.toTuple()->elements()[0].toTensor() * empty_plane;
         prob_raw = (prob_raw / torch::sum(prob_raw, 1).reshape({-1, 1})).to(torch::kCPU);
@@ -57,7 +57,7 @@ namespace gomoku {
         float* prob_out = prob_raw.data_ptr<float>();
         float* result_out = prob_raw.data_ptr<float>();
 
-        points.emplace_back(system_clock::now() - start);
+        // points.emplace_back(system_clock::now() - start);
 
         vector<pair<Reward, vector<pair<Action, Prob>>>> ret;
         for (int i = 0; i < states.size(); i++) {
@@ -75,11 +75,11 @@ namespace gomoku {
             }
             ret.emplace_back(reward, std::move(prob_distribution));
         }
-        points.emplace_back(system_clock::now() - start);
-        std::cout << "building input " << points[0].count() << std::endl;
-        std::cout << "forward done " << points[1].count() << std::endl;
-        std::cout << "res done " << points[2].count() << std::endl;
-        std::cout << "build output " << points[3].count() << std::endl;
+        // points.emplace_back(system_clock::now() - start);
+        // std::cout << "building input " << points[0].count() << std::endl;
+        // std::cout << "forward done " << points[1].count() << std::endl;
+        // std::cout << "res done " << points[2].count() << std::endl;
+        // std::cout << "build output " << points[3].count() << std::endl;
         return ret;
     }
 

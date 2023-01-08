@@ -1,5 +1,9 @@
 
 #include "MCTS/Tree.h"
+#include <iostream>
+#include <algorithm>
+#include "Gomoku/Board.h"
+using namespace gomoku;
 
 
 namespace mcts {
@@ -47,32 +51,39 @@ namespace mcts {
 
     template <class State, class Evaluator>
     void MCTS<State, Evaluator>::Search() {
-        std::unique_ptr<StateInterface> search_state(std::make_unique<State>(state));
-        Node* node = Select(search_state.get());
+        std::unique_ptr<State> search_state(std::make_unique<State>(state));
+        Node* node = Select(static_cast<StateInterface*>(search_state.get()));
         if (search_state->Terminated()) {
             Backup(node, search_state->CurrentReward());
         }
         else {
-            state_queue.push_back(std::move(search_state));
-            node_queue.push_back(node);
-            if (state_queue.size() >= param.eval_batch)
+            eval_queue.emplace_back(node, std::move(search_state));
+            // state_queue.push_back(std::move(search_state));
+            // node_queue.push_back(node);
+            if (eval_queue.size() >= param.eval_batch)
                 EvaluateQueue();
         }
     }
+
     template <class State, class Evaluator>
     void MCTS<State, Evaluator>::EvaluateQueue() {
-        if (state_queue.size() == 0)
-            break;
+        if (eval_queue.size() == 0)
+            return;
 
-        vector<pair<Reward, vector<pair<Action, Prob>>>> evaluated
-         = evaluator(state_queue);
-        
-        for (int i = 0; i < state_queue.size(); i++) {
-            node_queue[i]->Expand(evaluated[i].second);
-            Backup(node_queue[i], evaluated[i].first);
+        vector<StateInterface*> to_eval;
+        for (auto& [_, state_uptr] : eval_queue) {
+            to_eval.push_back(static_cast<StateInterface*>(state_uptr.get()));
         }
-        state_queue.clear();
-        node_queue.clear();
+        vector<pair<Reward, vector<pair<Action, Prob>>>> evaluated
+         = evaluator.EvaluateBatch(to_eval);
+        
+        for (int i = 0; i < eval_queue.size(); i++) {
+            eval_queue[i].first->Expand(evaluated[i].second);
+            Backup(eval_queue[i].first, evaluated[i].first);
+        }
+        // state_queue.clear();
+        // node_queue.clear();
+        eval_queue.clear();
     }
 
     /*
@@ -151,6 +162,21 @@ namespace mcts {
     template <class State, class Evaluator>
     Action MCTS<State, Evaluator>::GetOptimalAction() {
         return root->GetOptimalAction();
+    }
+
+    template <class State, class Evaluator>
+    void MCTS<State, Evaluator>::DebugLog() {
+        std::cout << "root " << (*root) << std::endl;
+        vector<pair<Action, Node*>> children_cp(root->children);
+        std::sort(children_cp.begin(), children_cp.end(),
+        [](pair<Action, Node*>& a, pair<Action, Node*>& b) {
+            return a.second->N > b.second->N;
+        });
+        for (int i = 0; i < 5; i++) {
+            Coord p = Action2Coord(children_cp[i].first);
+            std::cout << "(" << p.r << ", " << p.c << ") ";
+            std::cout << (*children_cp[i].second) << std::endl;
+        }
     }
 }
 

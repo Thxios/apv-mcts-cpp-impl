@@ -16,8 +16,7 @@ using std::pair;
 
 
 namespace mcts {
-    class Node;
-    using NodePtr = std::shared_ptr<Node>;
+    // class Node;
 
     class Node {
     public:
@@ -39,17 +38,17 @@ namespace mcts {
         int     Count();
 
         Node*   parent;
+
+        vector<pair<Action, Node*>> children;
+        Prob    P;
+        Reward  W       = 0.;
+        int     N       = 0;
+        double  N_sqrt  = 0.;
         
         friend std::ostream&    operator<<(std::ostream& out, Node& node);
         friend void             ShowNode(Node* node, int depth, Action action);
 
     private:
-        Prob    P;
-        Reward  W       = 0.;
-        int     N       = 0;
-        double  N_sqrt  = 0.;
-
-        vector<pair<Action, Node*>> children;
     };
 
 }

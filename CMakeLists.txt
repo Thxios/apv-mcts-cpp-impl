@@ -17,6 +17,7 @@ add_executable(
     torch_test 
     # Tests/torch_test.cpp
     Tests/gomoku_mcts_test.cpp
+    Sources/MCTS/Node.cpp
     Sources/Gomoku/Board.cpp
     Sources/Gomoku/Evaluator.cpp
 )
