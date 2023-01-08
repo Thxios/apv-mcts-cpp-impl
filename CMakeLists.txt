@@ -1,14 +1,12 @@
 
 
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-# set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed ltorch_cuda -Wl, --as-needed")
-list(APPEND CMAKE_PREFIX_PATH "~/libtorch")
+# list(APPEND CMAKE_PREFIX_PATH "~/libtorch")
 
 project(torch_test)
 
 include_directories(
     Includes
-    Sources
 )
 
 find_package(Torch REQUIRED)
@@ -23,6 +21,15 @@ add_executable(
     Sources/Gomoku/Server.cpp
 )
 target_link_libraries(torch_test "${TORCH_LIBRARIES}")
+
 set_property(TARGET torch_test PROPERTY CXX_STANDARD 17)
+if (MSVC)
+    file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
+    add_custom_command(TARGET torch_test
+                        POST_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                        ${TORCH_DLLS}
+                        $<TARGET_FILE_DIR:torch_test>)
+endif (MSVC)
 
 
