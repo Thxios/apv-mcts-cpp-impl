@@ -66,6 +66,14 @@ namespace mcts {
     }
 
     template <class State, class Evaluator>
+    void MCTS<State, Evaluator>::Search(int times) {
+        for (int i = 0; i < times; i++) {
+            Search();
+        }
+        EvaluateQueue();
+    }
+
+    template <class State, class Evaluator>
     void MCTS<State, Evaluator>::EvaluateQueue() {
         if (eval_queue.size() == 0)
             return;
@@ -172,7 +180,7 @@ namespace mcts {
         [](pair<Action, Node*>& a, pair<Action, Node*>& b) {
             return a.second->N > b.second->N;
         });
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < std::min<int>(children_cp.size(), 5); i++) {
             Coord p = Action2Coord(children_cp[i].first);
             std::cout << children_cp[i].first << " (" << p.r << ", " << p.c << ") ";
             std::cout << (*children_cp[i].second) << std::endl;

@@ -10,6 +10,7 @@
 #include "MCTS/Param.h"
 #include "Gomoku/Board.h"
 #include "Gomoku/Evaluator.h"
+#include "Gomoku/Server.h"
 
 
 using namespace std;
@@ -19,15 +20,17 @@ using namespace gomoku;
 
 
 vector<Coord> moves({
+    Coord(7, 7),
+    Coord(8, 7)
     // Coord(0, 0),
-    Coord(5, 5),
-    Coord(5, 6),
-    Coord(3, 5),
-    Coord(4, 4),
-    Coord(6, 5),
-    Coord(5, 4),
-    Coord(7, 5),
-    Coord(6, 4),
+    // Coord(5, 5),
+    // Coord(5, 6),
+    // Coord(3, 5),
+    // Coord(4, 4),
+    // Coord(6, 5),
+    // Coord(5, 4),
+    // Coord(7, 5),
+    // Coord(6, 4),
     // Coord(4, 5)
 });
 
@@ -61,23 +64,16 @@ int main(int argc, char *argv[]) {
         // to_eval.push_back(static_cast<StateInterface*>(copied.get()));
         // state_copies.push_back(std::move(copied));
     }
-    cout << bd << endl;
+    cout << bd << endl << endl;
 
 
     // vector<pair<Reward, vector<pair<Action, Prob>>>> ret = evaluator.EvaluateBatch(to_eval);
     // cout << "done" << endl;
-    Param param(3, 5, 8);
-    MCTS<Board, GomokuEvaluator> tree(bd, evaluator, param);
 
-    system_clock::time_point start = system_clock::now();
-    for (int i = 0; i < 1600; i++) {
-        tree.Search();
-    }
-    tree.EvaluateQueue();
-    system_clock::time_point end = system_clock::now();
-    duration<double> elapsed = end - start;
-    cout << "time cost " << elapsed.count() << endl;
-    tree.DebugLog();
+    Param param(3, 5, 8);
+    GomokuServer server(bd, evaluator, param);
+
+    server.Run(1200);
 
 }
 

@@ -84,7 +84,7 @@ namespace gomoku {
         prob_raw = (prob_raw / torch::sum(prob_raw, 1).reshape({-1, 1})).to(torch::kCPU);
         torch::Tensor result = out.toTuple()->elements()[1].toTensor().to(torch::kCPU);
         float* prob_out = prob_raw.data_ptr<float>();
-        float* result_out = prob_raw.data_ptr<float>();
+        float* result_out = result.data_ptr<float>();
 
         // points.emplace_back(system_clock::now() - start);
 

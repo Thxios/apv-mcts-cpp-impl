@@ -18,5 +18,5 @@ namespace mcts {
         const int       eval_batch;
     };
 
-    Param default_param;
+    extern Param default_param;
 }

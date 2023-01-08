@@ -32,6 +32,7 @@ namespace mcts {
         ~MCTS();
 
         void    Search();
+        void    Search(int times);
         // void    SearchAsync();
         void    Play(Action action);
         Node*   GetRoot();

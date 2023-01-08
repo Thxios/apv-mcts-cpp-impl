@@ -20,6 +20,7 @@ add_executable(
     Sources/MCTS/Node.cpp
     Sources/Gomoku/Board.cpp
     Sources/Gomoku/Evaluator.cpp
+    Sources/Gomoku/Server.cpp
 )
 target_link_libraries(torch_test "${TORCH_LIBRARIES}")
 set_property(TARGET torch_test PROPERTY CXX_STANDARD 17)
