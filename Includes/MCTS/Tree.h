@@ -3,7 +3,6 @@
 
 
 #include <memory>
-#include <future>
 #include <vector>
 #include <utility>
 
@@ -17,23 +16,13 @@ using std::pair;
 
 
 namespace mcts {
-    template <class State, class Evaluator>
     class MCTS {
-
-    static_assert(std::is_base_of<StateInterface, State>::value,
-        "invalid State type");
-    // static_assert(std::is_base_of<EvaluatorInterface<State>, Evaluator>::value,
-    //     "invalid Svaluator type");
-    static_assert(std::is_base_of<EvaluatorInterface, Evaluator>::value,
-        "invalid Svaluator type");
-
     public:
-        MCTS(const State& init_state, Evaluator& evaluator_, Param& param_=default_param);
+        MCTS(BaseState& init_state, BaseEvaluator& evaluator_, Param& param_=default_param);
         ~MCTS();
 
         void    Search();
         void    Search(int times);
-        // void    SearchAsync();
         void    Play(Action action);
         Node*   GetRoot();
         Action  GetOptimalAction();
@@ -42,16 +31,15 @@ namespace mcts {
         void    DebugLog();
     
     private:
-        Node*   Select(StateInterface* search_state);
+        Node*   Select(BaseState* search_state);
         void    Backup(Node* node, Reward z);
 
-        State       state;
-        Param&      param;
-        Evaluator&  evaluator;
-        Node*       root;
+        BaseState&      state;
+        Param&          param;
+        BaseEvaluator&  evaluator;
+        Node*           root;
 
-        vector<pair<Node*, std::unique_ptr<State>>> eval_queue;
+        vector<pair<Node*, std::unique_ptr<BaseState>>> eval_queue;
     };
 }
 
-#include "MCTS/Tree.tpp"

@@ -6,7 +6,7 @@
 #include <torch/torch.h>
 #include <torch/script.h>
 
-#include "MCTS/Tree.h"
+// #include "MCTS/Tree2.h"
 #include "MCTS/Param.h"
 #include "Gomoku/Board.h"
 #include "Gomoku/Evaluator.h"

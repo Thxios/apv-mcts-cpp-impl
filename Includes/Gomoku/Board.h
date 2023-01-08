@@ -1,15 +1,10 @@
 
 #pragma once
 
-#include <utility>
-#include <vector>
 #include <iostream>
+#include <memory>
 #include <cassert>
-// #include <torch/torch.h>
-// #include <torch/script.h>
 
-using std::vector;
-using std::pair;
 
 #include "MCTS/State.h"
 
@@ -18,6 +13,7 @@ namespace gomoku {
     using mcts::Action;
     using mcts::StateInfo;
     using mcts::Reward;
+    using mcts::BaseState;
 
     using Stone	= int;
 
@@ -67,7 +63,7 @@ namespace gomoku {
 
     // template <int SIZE>
 
-    class Board : public mcts::StateInterface {
+    class Board : public BaseState {
     public:
         class Iter {
         public:
@@ -93,14 +89,14 @@ namespace gomoku {
         virtual void        Play(Action action);
         virtual StateInfo   State();
         virtual bool        Terminated();
-        virtual Reward      CurrentReward();
+        virtual Reward      TerminalReward();
+
+        virtual std::unique_ptr<BaseState> GetCopy();
 
         void    Reset();
         Iter    GetPossibleActions();
 
         friend std::ostream& operator<<(std::ostream& out, Board& b);
-    
-        // torch::Tensor ToTensor();
 
         Stone       turn            = BLACK;
         Stone       board[3][SIZE][SIZE];

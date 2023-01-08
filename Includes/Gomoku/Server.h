@@ -20,7 +20,7 @@ namespace gomoku {
 
     private:    
         Board   state;
-        mcts::MCTS<Board, GomokuEvaluator> tree;
+        mcts::MCTS tree;
     };
 
 }

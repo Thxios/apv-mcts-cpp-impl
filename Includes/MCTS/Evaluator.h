@@ -14,7 +14,7 @@ using std::pair;
 namespace mcts
 {
     // template <class State>
-    class EvaluatorInterface {
+    class BaseEvaluator {
 
     // static_assert(std::is_base_of<StateInterface, State>::value,
     //     "invalid State type");
@@ -22,7 +22,7 @@ namespace mcts
     public:
         virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
             // EvaluateBatch(vector<std::unique_ptr<State>>& states)   = 0;
-            EvaluateBatch(vector<StateInterface*>& states)  = 0;
+            EvaluateBatch(vector<BaseState*>& states)  = 0;
     };
 }
 

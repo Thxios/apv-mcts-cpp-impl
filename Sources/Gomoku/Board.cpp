@@ -39,9 +39,13 @@ namespace gomoku {
         return game_state != ONGOING;
     }
 
-    Reward Board::CurrentReward() {
+    Reward Board::TerminalReward() {
         assert(Terminated());
         return ((game_state != DRAW) ? 1. : 0.);
+    }
+
+    std::unique_ptr<BaseState> Board::GetCopy() {
+        return std::unique_ptr<BaseState>(std::make_unique<Board>(*this));
     }
 
     Board::Iter Board::GetPossibleActions() {

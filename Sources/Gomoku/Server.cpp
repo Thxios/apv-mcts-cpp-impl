@@ -6,7 +6,7 @@ namespace gomoku {
 
     GomokuServer::GomokuServer(
         const Board& init_state, GomokuEvaluator& evaluator_, mcts::Param& param)
-    : state(init_state), tree(init_state, evaluator_, param) {
+    : state(init_state), tree(state, evaluator_, param) {
 
     }
 
@@ -20,7 +20,6 @@ namespace gomoku {
             mcts::Action action = tree.GetOptimalAction();
             tree.DebugLog();
             tree.Play(action);
-            state.Play(action);
 
             std::chrono::system_clock::time_point end_time = std::chrono::system_clock::now();
             std::chrono::duration<double> elapsed = end_time - start_time;

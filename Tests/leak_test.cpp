@@ -22,7 +22,7 @@ using namespace mcts;
 const int GAME_LEN = 5;
 
 
-class TestState : public StateInterface {
+class TestState : public BaseState {
 public:
     TestState() {}
     TestState(const TestState& other) : moves(other.moves) {
@@ -41,7 +41,7 @@ public:
     virtual bool Terminated() {
         return moves.size() >= GAME_LEN;
     }
-    virtual Reward CurrentReward() {
+    virtual Reward TerminalReward() {
         return 1;
     }
     bool CanMove(Action action) {
@@ -65,13 +65,13 @@ std::ostream& operator<<(std::ostream& out, TestState& state) {
 
 // template <class State>
 // class TestEvaluator : public EvaluatorInterface<State> {
-class TestEvaluator : public EvaluatorInterface {
+class TestEvaluator : public BaseEvaluator {
 public:
     TestEvaluator() : gen(rd()), random_prob(-0.5, 0.5) {}
     virtual ~TestEvaluator() {}
 
     virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
-    EvaluateBatch(vector<unique_ptr<StateInterface>>& states) {
+    EvaluateBatch(vector<unique_ptr<BaseState>>& states) {
         vector<pair<Reward, vector<pair<Action, Prob>>>> evaluated;
         for (auto& state : states) {
             evaluated.push_back(EvaluateSingle(

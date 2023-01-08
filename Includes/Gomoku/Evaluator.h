@@ -12,17 +12,17 @@
 namespace gomoku {
     using mcts::Action;
     using mcts::Prob;
-    using mcts::StateInterface;
+    using mcts::BaseState;
 
 
     torch::Tensor ToTensor(Board* board);
 
-    class GomokuEvaluator : public mcts::EvaluatorInterface {
+    class GomokuEvaluator : public mcts::BaseEvaluator {
     public:
         GomokuEvaluator(torch::jit::script::Module& model_);
 
         virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
-            EvaluateBatch(vector<StateInterface*>& states);
+            EvaluateBatch(vector<BaseState*>& states);
     
     private:
         void WarmUp();

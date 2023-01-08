@@ -46,7 +46,7 @@ namespace gomoku {
     }
 
     vector<pair<Reward, vector<pair<Action, Prob>>>> 
-    GomokuEvaluator::EvaluateBatch(vector<StateInterface*>& states) {
+    GomokuEvaluator::EvaluateBatch(vector<BaseState*>& states) {
         vector<Board*> states_casted;
         for (auto state_ptr : states) {
             states_casted.emplace_back(dynamic_cast<Board*>(state_ptr));
