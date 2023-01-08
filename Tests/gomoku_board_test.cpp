@@ -23,11 +23,6 @@ vector<Coord> moves({
     Coord(14, 1)
 });
 
-std::ostream& operator<<(std::ostream& out, Coord &cd){
-    out << "(" << cd.r << ", " << cd.c << ")";
-    return out;
-}
-
 int main() {
     Board bd;
 

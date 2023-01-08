@@ -5,6 +5,7 @@
 // #include <torch/script.h>
 
 #include "Gomoku/Board.h"
+#include "Gomoku/Evaluator.h"
 
 using namespace std;
 using namespace gomoku;
@@ -33,7 +34,7 @@ int main() {
     }
     cout << bd << endl;
 
-    torch::Tensor bd_tensor = bd.StateToTensor();
+    torch::Tensor bd_tensor = ToTensor(&bd);
     cout << bd_tensor << endl;
 }
 

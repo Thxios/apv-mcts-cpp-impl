@@ -28,6 +28,9 @@ public:
     TestState(const TestState& other) : moves(other.moves) {
         cout << "cp call " << (*this) << endl;
     }
+    virtual std::unique_ptr<BaseState> GetCopy() {
+        return unique_ptr<BaseState>(make_unique<TestState>(*this));
+    }
 
     virtual ~TestState() {
         cout << "delete " << (*this) << endl;
@@ -71,21 +74,21 @@ public:
     virtual ~TestEvaluator() {}
 
     virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
-    EvaluateBatch(vector<unique_ptr<BaseState>>& states) {
+        EvaluateBatch(vector<BaseState*>& states) {
         vector<pair<Reward, vector<pair<Action, Prob>>>> evaluated;
-        for (auto& state : states) {
+        for (auto state : states) {
             evaluated.push_back(EvaluateSingle(
-                dynamic_cast<TestState&>(*state)
+                dynamic_cast<TestState*>(state)
             ));
         }
         return evaluated;
     }
 
-    pair<Reward, vector<pair<Action, Prob>>> EvaluateSingle(TestState& state) {
+    pair<Reward, vector<pair<Action, Prob>>> EvaluateSingle(TestState* state) {
         Reward result = random_prob(gen);
         vector<Action> remained_moves;
         for (int i = 0; i < GAME_LEN; i++) {
-            if (state.CanMove(i))
+            if (state->CanMove(i))
                 remained_moves.push_back(i);
         }
         vector<pair<Action, Prob>> action_probs;
@@ -124,7 +127,7 @@ int main() {
     TestState s;
     Param param(3, 5, 1);
     TestEvaluator eval;
-    MCTS<TestState, TestEvaluator> tree(s, param, eval);
+    MCTS tree(s, eval, param);
     
     cout << endl << "Start Search" << endl;
     for (int i = 0; i < 5; i++) {
