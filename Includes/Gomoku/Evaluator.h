@@ -15,6 +15,8 @@ namespace gomoku {
     using mcts::StateInterface;
 
 
+    torch::Tensor ToTensor(Board* board);
+
     class GomokuEvaluator : public mcts::EvaluatorInterface {
     public:
         GomokuEvaluator(torch::jit::script::Module& model_);

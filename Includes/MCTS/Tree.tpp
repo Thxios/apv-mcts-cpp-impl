@@ -166,7 +166,7 @@ namespace mcts {
 
     template <class State, class Evaluator>
     void MCTS<State, Evaluator>::DebugLog() {
-        std::cout << "root " << (*root) << std::endl;
+        std::cout << "root N=" << root->N << std::endl;
         vector<pair<Action, Node*>> children_cp(root->children);
         std::sort(children_cp.begin(), children_cp.end(),
         [](pair<Action, Node*>& a, pair<Action, Node*>& b) {
@@ -174,7 +174,7 @@ namespace mcts {
         });
         for (int i = 0; i < 5; i++) {
             Coord p = Action2Coord(children_cp[i].first);
-            std::cout << "(" << p.r << ", " << p.c << ") ";
+            std::cout << children_cp[i].first << " (" << p.r << ", " << p.c << ") ";
             std::cout << (*children_cp[i].second) << std::endl;
         }
     }

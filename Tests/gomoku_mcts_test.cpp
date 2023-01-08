@@ -20,7 +20,7 @@ using namespace gomoku;
 
 vector<Coord> moves({
     // Coord(0, 0),
-    // Coord(5, 5),
+    Coord(5, 5),
     Coord(5, 6),
     Coord(3, 5),
     Coord(4, 4),
@@ -28,7 +28,7 @@ vector<Coord> moves({
     Coord(5, 4),
     Coord(7, 5),
     Coord(6, 4),
-    Coord(4, 5)
+    // Coord(4, 5)
 });
 
 int main(int argc, char *argv[]) {
@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
     }
     catch (const c10::Error& e) {
         std::cerr << "error loading the model" << std::endl;
+        std::cerr << e.what() << std::endl;
         return -1;
     }
 
@@ -60,6 +61,7 @@ int main(int argc, char *argv[]) {
         // to_eval.push_back(static_cast<StateInterface*>(copied.get()));
         // state_copies.push_back(std::move(copied));
     }
+    cout << bd << endl;
 
 
     // vector<pair<Reward, vector<pair<Action, Prob>>>> ret = evaluator.EvaluateBatch(to_eval);
@@ -68,7 +70,7 @@ int main(int argc, char *argv[]) {
     MCTS<Board, GomokuEvaluator> tree(bd, evaluator, param);
 
     system_clock::time_point start = system_clock::now();
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 1600; i++) {
         tree.Search();
     }
     tree.EvaluateQueue();

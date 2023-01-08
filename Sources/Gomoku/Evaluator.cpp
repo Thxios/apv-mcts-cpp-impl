@@ -6,6 +6,34 @@ using namespace std::chrono;
 
 
 namespace gomoku {
+
+    torch::Tensor ToTensor(Board* board) {
+        torch::Tensor board_plane = torch::from_blob(
+            board->board,
+            {3, SIZE, SIZE},
+            torch::TensorOptions().dtype(torch::kInt32)
+        ).to(torch::kFloat32);
+
+        torch::Tensor color_plane;
+        if (board->turn == BLACK) {
+            color_plane = torch::zeros({1, SIZE, SIZE});
+        }
+        else {
+            color_plane = torch::ones({1, SIZE, SIZE});
+            board_plane = board_plane.index({
+                torch::tensor({EMPTY, WHITE, BLACK}),
+                torch::indexing::Slice(),
+                torch::indexing::Slice()
+            });
+        }
+
+        return torch::cat({
+            board_plane,
+            color_plane,
+            torch::ones({1, SIZE, SIZE})
+        });
+    }
+
     GomokuEvaluator::GomokuEvaluator(torch::jit::script::Module& model_)
     : model(model_) {
         model.eval();
@@ -33,8 +61,8 @@ namespace gomoku {
         // system_clock::time_point start = system_clock::now();
 
         vector<torch::Tensor> board_tensor;
-        for (auto state_ptr : states) {
-            board_tensor.emplace_back(std::move(state_ptr->ToTensor()));
+        for (Board* state_ptr : states) {
+            board_tensor.emplace_back(std::move(ToTensor(state_ptr)));
         }
 
         torch::Tensor state_tensors = torch::stack(board_tensor);
@@ -51,7 +79,8 @@ namespace gomoku {
         torch::jit::IValue out = model.forward(inputs);
         // points.emplace_back(system_clock::now() - start);
 
-        torch::Tensor prob_raw = out.toTuple()->elements()[0].toTensor() * empty_plane;
+        torch::Tensor prob_raw = torch::nn::functional::softmax(
+            out.toTuple()->elements()[0].toTensor(), 1) * empty_plane;
         prob_raw = (prob_raw / torch::sum(prob_raw, 1).reshape({-1, 1})).to(torch::kCPU);
         torch::Tensor result = out.toTuple()->elements()[1].toTensor().to(torch::kCPU);
         float* prob_out = prob_raw.data_ptr<float>();
@@ -65,11 +94,11 @@ namespace gomoku {
             Reward reward = result_out[i];
 
             vector<pair<Action, Prob>> prob_distribution;
-            int prefix = i * SIZE * SIZE;
             for (auto iter = states[i]->GetPossibleActions(); iter; ++iter) {
                 Action action = iter.GetAction();
+                // Coord coord = Action2Coord(action);
                 // Prob prob = prob_raw[i][action].item<float>();
-                Prob prob = prob_out[prefix + action];
+                Prob prob = prob_out[i*SIZE*SIZE + action];
                 
                 prob_distribution.emplace_back(action, prob);
             }
@@ -88,6 +117,6 @@ namespace gomoku {
         inputs.emplace_back(torch::randn({8, N_FEATURES, SIZE, SIZE}).to(torch::kCUDA));
         torch::NoGradGuard no_grad;
         model.forward(inputs);
-        model.forward(inputs);
+        // model.forward(inputs);
     }
 }

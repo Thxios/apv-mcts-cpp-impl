@@ -20,14 +20,20 @@ vector<Coord> moves({
     Coord(5, 4),
     Coord(7, 5),
     Coord(6, 4),
-    Coord(4, 5)
+    Coord(14, 1)
 });
+
+std::ostream& operator<<(std::ostream& out, Coord &cd){
+    out << "(" << cd.r << ", " << cd.c << ")";
+    return out;
+}
 
 int main() {
     Board bd;
 
     for (Coord move: moves) {
         bd.Play(Coord2Action(move));
+        cout << Coord2Action(move) << " " << move << endl;
         cout << bd << endl;
         cout << endl;
     }

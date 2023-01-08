@@ -15,10 +15,10 @@ namespace mcts {
 
     void Node::Expand(vector<pair<Action, Prob>>& prob_distribution) {
         if (!children.empty())
-            return ;
+            return;
 
         for (auto [action, prob] : prob_distribution) {
-            children.push_back({action, new Node(prob, this)});
+            children.emplace_back(action, new Node(prob, this));
         }
     }
 
@@ -95,6 +95,7 @@ namespace mcts {
         out << "P=" << node.P;
         out << " Q=" << node.Q();
         out << " N=" << node.N;
+        out << " UCT=" << node.UCT(5);
         out << ")";
         return out;
     }
