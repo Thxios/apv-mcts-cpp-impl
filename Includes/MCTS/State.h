@@ -14,6 +14,8 @@ namespace mcts {
 
     class BaseState {
     public:
+        virtual ~BaseState() {};
+
         virtual void        Play(Action action) = 0;
         virtual StateInfo   State()             = 0;
         virtual bool        Terminated()        = 0;

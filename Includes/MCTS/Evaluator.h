@@ -14,8 +14,9 @@ using std::pair;
 namespace mcts
 {
     class BaseEvaluator {
-
     public:
+        virtual ~BaseEvaluator() {};
+
         virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
             EvaluateBatch(vector<BaseState*>& states)  = 0;
     };

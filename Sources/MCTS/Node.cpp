@@ -92,7 +92,8 @@ namespace mcts {
         out << "P=" << node.P;
         out << " Q=" << node.Q();
         out << " N=" << node.N;
-        out << " UCT=" << node.UCT(5);
+        if (node.parent)
+            out << " UCT=" << node.UCT(5);
         out << ")";
         return out;
     }
