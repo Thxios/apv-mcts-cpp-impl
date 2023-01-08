@@ -5,8 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <cassert>
-#include <torch/torch.h>
-#include <torch/script.h>
+// #include <torch/torch.h>
+// #include <torch/script.h>
 
 using std::vector;
 using std::pair;
@@ -100,9 +100,7 @@ namespace gomoku {
 
         friend std::ostream& operator<<(std::ostream& out, Board& b);
     
-        torch::Tensor ToTensor();
-        int NumPossibleActions();
-        // torch::Tensor StateToTensor2();
+        // torch::Tensor ToTensor();
 
         Stone       turn            = BLACK;
         Stone       board[3][SIZE][SIZE];

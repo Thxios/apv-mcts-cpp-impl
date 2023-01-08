@@ -3,6 +3,12 @@
 
 
 namespace gomoku {
+
+    std::ostream& operator<<(std::ostream& out, Coord &cd){
+        out << "(" << cd.r << ", " << cd.c << ")";
+        return out;
+    }
+
     Board::Board() {
         Reset();
     }
@@ -79,20 +85,21 @@ namespace gomoku {
 
     bool Board::FiveInRow(Coord pos, Coord delta) {
         Stone color = GetColor(pos);
+        assert(color != EMPTY);
         Coord cur;
-        int n_left = 0, n_right = 0;
+        int n_left = 0, n_right = 1;
 
         cur = pos - delta;
-        while (Inside(pos) && board[color][cur.r][cur.c]) {
+        while (Inside(cur) && board[color][cur.r][cur.c]) {
             cur -= delta;
             n_left++;
         }
         cur = pos + delta;
-        while (Inside(pos) && board[color][cur.r][cur.c]) {
+        while (Inside(cur) && board[color][cur.r][cur.c]) {
             cur += delta;
             n_right++;
         }
-        return (n_left + n_right + 1) >= 5;
+        return (n_left + n_right) >= 5;
     }
 
     Board::Iter& Board::Iter::operator++() {
@@ -144,39 +151,5 @@ namespace gomoku {
         }
         return out;
     }
-
-    torch::Tensor Board::ToTensor() {
-        torch::Tensor board_plane = torch::from_blob(
-            board,
-            {3, SIZE, SIZE},
-            torch::TensorOptions().dtype(torch::kInt32)
-        ).to(torch::kFloat32);
-
-        torch::Tensor color_plane;
-        if (turn == BLACK) {
-            color_plane = torch::zeros({1, SIZE, SIZE});
-        }
-        else {
-            color_plane = torch::ones({1, SIZE, SIZE});
-            board_plane = board_plane.index({
-                torch::tensor({0, 2, 1}),
-                torch::indexing::Slice(),
-                torch::indexing::Slice()
-            });
-        }
-
-        return torch::cat({
-            board_plane,
-            color_plane,
-            torch::ones({1, SIZE, SIZE})
-        });
-    }
-
-    int Board::NumPossibleActions() {
-        return (SIZE * SIZE - turn_elapsed);
-    }
-    // torch::Tensor Board::StateToTensor2() {
-    //     float ref_array[5][SIZE][SIZE];
-    // }
-};
+}
 
