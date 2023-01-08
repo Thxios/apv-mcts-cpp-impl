@@ -6,7 +6,7 @@ namespace mcts {
     
     template <class State, class Evaluator>
     MCTS<State, Evaluator>::MCTS(
-        const State& init_state, Param& param_, Evaluator& evaluator_)
+        const State& init_state, Evaluator& evaluator_, Param& param_)
     : state(init_state), param(param_), evaluator(evaluator_) {
         root = new Node(1.);
     }
@@ -17,7 +17,7 @@ namespace mcts {
     }
 
     template <class State, class Evaluator>
-    Node* MCTS<State, Evaluator>::Select(State* search_state) {
+    Node* MCTS<State, Evaluator>::Select(StateInterface* search_state) {
         Node* node = root;
         
         while (!node->IsLeaf()) {
@@ -47,12 +47,48 @@ namespace mcts {
 
     template <class State, class Evaluator>
     void MCTS<State, Evaluator>::Search() {
+        std::unique_ptr<StateInterface> search_state(std::make_unique<State>(state));
+        Node* node = Select(search_state.get());
+        if (search_state->Terminated()) {
+            Backup(node, search_state->CurrentReward());
+        }
+        else {
+            state_queue.push_back(std::move(search_state));
+            node_queue.push_back(node);
+            if (state_queue.size() >= param.eval_batch)
+                EvaluateQueue();
+        }
+    }
+    template <class State, class Evaluator>
+    void MCTS<State, Evaluator>::EvaluateQueue() {
+        if (state_queue.size() == 0)
+            break;
+
+        vector<pair<Reward, vector<pair<Action, Prob>>>> evaluated
+         = evaluator(state_queue);
+        
+        for (int i = 0; i < state_queue.size(); i++) {
+            node_queue[i]->Expand(evaluated[i].second);
+            Backup(node_queue[i], evaluated[i].first);
+        }
+        state_queue.clear();
+        node_queue.clear();
+    }
+
+    /*
+    template <class State, class Evaluator>
+    void MCTS<State, Evaluator>::Search() {
         vector<Node*> leaves;
-        vector<std::unique_ptr<State>> states;
+        vector<std::unique_ptr<StateInterface>> states;
 
         for (int i = 0; i < param.eval_batch; i++) {
-            states.push_back(state.GetCopy());
-            Node* node = Select(state[i].get());
+            // states.push_back(state.GetCopy());
+            std::cout << "make unique" << std::endl;
+            states.push_back(std::make_unique<State>(state));
+            Node* node = Select(
+                // dynamic_cast<State*>(states[i].get())
+                states[i].get()
+            );
             leaves.push_back(node);
         }
 
@@ -64,11 +100,13 @@ namespace mcts {
             Backup(leaves[i], evaluated[i].first);
         }
     }
+    */
 
+    /*
     template <class State, class Evaluator>
     void MCTS<State, Evaluator>::SearchAsync() {
         vector<Node*> leaves;
-        vector<std::unique_ptr<State>> states;
+        vector<std::unique_ptr<StateInterface>> states;
 
         vector<std::future<Node*>> threads;
 
@@ -95,6 +133,7 @@ namespace mcts {
             Backup(leaves[i], evaluated[i].first);
         }
     }
+    */
 
     template <class State, class Evaluator>
     void MCTS<State, Evaluator>::Play(Action action) {

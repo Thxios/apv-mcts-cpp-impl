@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <cassert>
+#include <torch/torch.h>
+#include <torch/script.h>
 
 using std::vector;
 using std::pair;
@@ -18,6 +20,11 @@ namespace gomoku {
     using mcts::Reward;
 
     using Stone	= int;
+
+    const Stone	EMPTY   = 0;
+    const Stone	BLACK   = 1;
+    const Stone	WHITE   = 2;
+
     class Coord {
     public:
         Coord() : r(-1), c(-1) {}
@@ -43,30 +50,40 @@ namespace gomoku {
         }
     };
     
-    static const Coord DELTA[4] = {
+    static const Coord  DELTA[4]    = {
         Coord(1, -1),
         Coord(1, 0),
         Coord(1, 1),
         Coord(0, 1),
     };
 
-    const Stone	EMPTY   = 0;
-    const Stone	BLACK   = 1;
-    const Stone	WHITE   = 2;
+    const int   N_FEATURES  = 5;
+    const int   SIZE        = 15;
 
-    const int SIZE = 15;
+    inline bool     Inside(Coord pos);
+    inline bool     Inside(int r, int c);
+    inline Coord    Action2Coord(Action action);
+    inline Action   Coord2Action(Coord coord);
 
     // template <int SIZE>
-    class Board : mcts::StateInterface {
+
+    class Board : public mcts::StateInterface {
     public:
         class Iter {
         public:
-            Iter(Board& belong_) : belong(belong_), current(-1) {++(*this);}
+            Iter(Board& belong_) : belong(belong_), current(-1) {
+                ++(*this);
+            }
             Iter& operator++();
-            operator bool() const {return current != -1;}
+            operator bool() const {
+                return current != -1;
+            }
+            Action GetAction() {
+                return current;
+            }
         private:
-            Board& belong;
-            Action current;
+            Board&  belong;
+            Action  current;
         };
 
     public:
@@ -82,26 +99,28 @@ namespace gomoku {
         Iter    GetPossibleActions();
 
         friend std::ostream& operator<<(std::ostream& out, Board& b);
+    
+        torch::Tensor ToTensor();
+        int NumPossibleActions();
+        // torch::Tensor StateToTensor2();
+
+        Stone       turn            = BLACK;
+        Stone       board[3][SIZE][SIZE];
 
     private:
-        StateInfo CheckState();
-        inline Stone GetColor(Coord pos);
-        inline Stone GetColor(Action pos);
-        inline Stone GetColor(int r, int c);
-        bool FiveInRow(Coord pos, Coord delta);
+        StateInfo   CheckState();
+        bool        FiveInRow(Coord pos, Coord delta);
 
-        Stone       turn = BLACK;
-        int         turn_elapsed = 0;
-        Stone       board[3][SIZE][SIZE];
-        StateInfo   game_state = ONGOING;
-        Action      last_action = -1;
+        inline Stone    GetColor(Coord pos);
+        inline Stone    GetColor(Action pos);
+        inline Stone    GetColor(int r, int c);
+
+        // Stone       turn            = BLACK;
+        int         turn_elapsed    = 0;
+        StateInfo   game_state      = ONGOING;
+        Action      last_action     = -1;
+        // Stone       board[3][SIZE][SIZE];
     };
-
-    inline bool Inside(Coord pos);
-    inline bool Inside(int r, int c);
-    inline Coord Action2Coord(Action action);
-    inline Action Coord2Action(Coord coord);
 }
-
 
 #include "Gomoku/Board.ipp"

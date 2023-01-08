@@ -3,6 +3,21 @@
 
 
 namespace gomoku {
+
+    inline Stone Board::GetColor(Coord pos) {
+        return ((board[EMPTY][pos.r][pos.c]) ? EMPTY : 
+        (board[BLACK][pos.r][pos.c] ? BLACK : WHITE));
+    }
+
+    inline Stone Board::GetColor(Action pos) {
+        return GetColor(Action2Coord(pos));
+    }
+
+    inline Stone Board::GetColor(int r, int c) {
+        return ((board[EMPTY][r][c]) ? EMPTY : 
+        (board[BLACK][r][c] ? BLACK : WHITE));
+    }
+
     inline Coord Action2Coord(Action action) {
         return Coord(action / SIZE, action % SIZE);
     }

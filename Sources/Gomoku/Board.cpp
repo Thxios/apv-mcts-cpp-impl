@@ -8,7 +8,7 @@ namespace gomoku {
     }
 
     Board::~Board() {
-
+        
     }
 
     void Board::Play(Action action) {
@@ -144,5 +144,39 @@ namespace gomoku {
         }
         return out;
     }
+
+    torch::Tensor Board::ToTensor() {
+        torch::Tensor board_plane = torch::from_blob(
+            board,
+            {3, SIZE, SIZE},
+            torch::TensorOptions().dtype(torch::kInt32)
+        ).to(torch::kFloat32);
+
+        torch::Tensor color_plane;
+        if (turn == BLACK) {
+            color_plane = torch::zeros({1, SIZE, SIZE});
+        }
+        else {
+            color_plane = torch::ones({1, SIZE, SIZE});
+            board_plane = board_plane.index({
+                torch::tensor({0, 2, 1}),
+                torch::indexing::Slice(),
+                torch::indexing::Slice()
+            });
+        }
+
+        return torch::cat({
+            board_plane,
+            color_plane,
+            torch::ones({1, SIZE, SIZE})
+        });
+    }
+
+    int Board::NumPossibleActions() {
+        return (SIZE * SIZE - turn_elapsed);
+    }
+    // torch::Tensor Board::StateToTensor2() {
+    //     float ref_array[5][SIZE][SIZE];
+    // }
 };
 

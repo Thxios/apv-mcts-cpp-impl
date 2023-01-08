@@ -7,6 +7,7 @@ namespace mcts {
         : P(prob), parent(parent_) {}
 
     Node::~Node() {
+        // std::cout << "delete " << (*this) << std::endl;
         for (auto [_, child] : children) {
             delete child;
         }
