@@ -41,6 +41,9 @@ public:
     virtual bool Terminated() {
         return moves.size() >= GAME_LEN;
     }
+    virtual Reward CurrentReward() {
+        return 1;
+    }
     bool CanMove(Action action) {
         return find(moves.begin(), moves.end(), action) == moves.end();
     }
@@ -60,22 +63,25 @@ std::ostream& operator<<(std::ostream& out, TestState& state) {
     return out;
 }
 
-template <class State>
-class TestEvaluator : public EvaluatorInterface<State> {
+// template <class State>
+// class TestEvaluator : public EvaluatorInterface<State> {
+class TestEvaluator : public EvaluatorInterface {
 public:
     TestEvaluator() : gen(rd()), random_prob(-0.5, 0.5) {}
     virtual ~TestEvaluator() {}
 
     virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
-    EvaluateBatch(vector<unique_ptr<State>>& states) {
+    EvaluateBatch(vector<unique_ptr<StateInterface>>& states) {
         vector<pair<Reward, vector<pair<Action, Prob>>>> evaluated;
         for (auto& state : states) {
-            evaluated.push_back(EvaluateSingle(*state));
+            evaluated.push_back(EvaluateSingle(
+                dynamic_cast<TestState&>(*state)
+            ));
         }
         return evaluated;
     }
 
-    pair<Reward, vector<pair<Action, Prob>>> EvaluateSingle(State& state) {
+    pair<Reward, vector<pair<Action, Prob>>> EvaluateSingle(TestState& state) {
         Reward result = random_prob(gen);
         vector<Action> remained_moves;
         for (int i = 0; i < GAME_LEN; i++) {
@@ -116,14 +122,14 @@ int main() {
     cout << "hello, world!" << endl;
 
     TestState s;
-    Param param(3, 5, 3);
-    TestEvaluator<TestState> eval;
-    MCTS<TestState, TestEvaluator<TestState>> tree(s, param, eval);
+    Param param(3, 5, 1);
+    TestEvaluator eval;
+    MCTS<TestState, TestEvaluator> tree(s, param, eval);
     
     cout << endl << "Start Search" << endl;
     for (int i = 0; i < 5; i++) {
-        // tree.Search();
-        tree.SearchAsync();
+        tree.Search();
+        // tree.SearchAsync();
         cout << i << " search done" << endl;
     }
     cout << "Search done" << endl;
