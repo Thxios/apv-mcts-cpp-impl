@@ -14,12 +14,11 @@ namespace gomoku {
     using mcts::Prob;
     using mcts::BaseState;
 
-
     torch::Tensor ToTensor(Board* board);
 
     class GomokuEvaluator : public mcts::BaseEvaluator {
     public:
-        GomokuEvaluator(torch::jit::script::Module& model_);
+        GomokuEvaluator(torch::jit::script::Module& model_, bool noise_=false);
 
         virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
             EvaluateBatch(vector<BaseState*>& states);
@@ -30,7 +29,11 @@ namespace gomoku {
             EvaluateBatchInternal(vector<Board*>& states);
 
         torch::jit::script::Module& model;
+
         bool    cuda;
+        bool    dirichlet_noise;
+        double  alpha = 0.1;
+        double  epsilon = 0.25;
     };
 }
 

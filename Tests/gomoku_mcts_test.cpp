@@ -51,7 +51,8 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    GomokuEvaluator evaluator(model);
+    GomokuEvaluator evaluator(model, true);
+    // GomokuEvaluator evaluator(model);
     cout << "Evaluator ready" << endl;
 
     Board bd;
@@ -73,7 +74,7 @@ int main(int argc, char *argv[]) {
     Param param(3, 5, 8);
     GomokuServer server(bd, evaluator, param);
 
-    server.Run(1200);
+    server.Run(1000);
 
 }
 

@@ -97,6 +97,7 @@ namespace gomoku {
 
         friend std::ostream& operator<<(std::ostream& out, Board& b);
 
+        int         turn_elapsed    = 0;
         Stone       turn            = BLACK;
         Stone       board[3][SIZE][SIZE];
 
@@ -108,11 +109,8 @@ namespace gomoku {
         inline Stone    GetColor(Action pos);
         inline Stone    GetColor(int r, int c);
 
-        // Stone       turn            = BLACK;
-        int         turn_elapsed    = 0;
         StateInfo   game_state      = ONGOING;
         Action      last_action     = -1;
-        // Stone       board[3][SIZE][SIZE];
     };
 }
 

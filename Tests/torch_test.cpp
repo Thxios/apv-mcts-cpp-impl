@@ -29,6 +29,12 @@ void internal(torch::jit::script::Module& mod, vector<torch::jit::IValue>& inp) 
 
 
 int main(int argc, char *argv[]) {
+    torch::Tensor alpha = torch::ones({5, 15 * 15}) * 0.03;
+    torch::Tensor noise = torch::_sample_dirichlet(alpha);
+    cout << noise << endl;
+    cout << noise.sizes() << endl;
+    cout << torch::sum(noise, 1) << endl;
+    return 0;
     if (argc != 2) {
         std::cerr << "usage: <path-to-exported-script>" << std::endl;
         return -1;
@@ -54,17 +60,18 @@ int main(int argc, char *argv[]) {
     inputs.push_back(torch::randn({8, 5, 15, 15}));
     cout << "input ready" << endl;
 
-    internal(model, inputs);
-    internal(model, inputs);
+
+    // internal(model, inputs);
+    // internal(model, inputs);
 
     
-    model.eval();
-    torch::NoGradGuard no_grad;
+    // model.eval();
+    // torch::NoGradGuard no_grad;
 
-    internal(model, inputs);
-    internal(model, inputs);
-    torch::NoGradGuard no_grad_;
-    internal(model, inputs);
+    // internal(model, inputs);
+    // internal(model, inputs);
+    // torch::NoGradGuard no_grad_;
+    // internal(model, inputs);
 
     // torch::Tensor prob = out.toTuple()->elements()[0].toTensor();
     // torch::Tensor res = out.toTuple()->elements()[1].toTensor();
