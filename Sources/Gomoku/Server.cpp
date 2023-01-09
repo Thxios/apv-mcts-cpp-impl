@@ -103,8 +103,9 @@ namespace gomoku {
 
         GomokuServer server(board, evaluator, param);
         std::cout << "Server ready" << std::endl;
+        std::cout << std::endl;
 
-        for (int game = config.start_no; game <= config.max_repeat; game++) {
+        for (int game = config.start_no; game < config.max_repeat; game++) {
             std::cout << "===== game " << game << " =====" << std::endl;
 
             std::string save_path;
