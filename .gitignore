@@ -1,10 +1,13 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,cmake,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,cmake,c++
 
+*.bin
 *.zip
 *.tar
 *.pt
 *.log
+*.npy
+*.npz
 Build
 
 ### C++ ###
