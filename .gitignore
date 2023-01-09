@@ -8,6 +8,7 @@
 *.log
 *.npy
 *.npz
+*.txt
 Build
 
 ### C++ ###
@@ -45,6 +46,7 @@ Build
 *.app
 
 ### CMake ###
+!CMakeLists.txt
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
