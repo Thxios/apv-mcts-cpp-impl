@@ -78,7 +78,7 @@ namespace gomoku {
         std::cout << "using config:" << std::endl;
         std::cout << "MODEL\t\t" << config.model_path << std::endl;
         std::cout << "N_SEARCH\t" << config.search_per_move << std::endl;
-        std::cout << "SAVE_RESULT\t" << config.save_result << std::endl;
+        std::cout << "SAVE_RESULT\t" << (config.save_result ? "TRUE" : "FALSE") << std::endl;
         std::cout << "SAVE_DIR\t" << config.save_dir << std::endl;
         std::cout << "SAVE_START\t" << config.start_no << std::endl;        
         std::cout << "MAX_REPEAT\t" << config.max_repeat << std::endl;

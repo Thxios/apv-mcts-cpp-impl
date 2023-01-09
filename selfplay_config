@@ -8,7 +8,7 @@ N_SEARCH    1200
 EVAL_BATCH  8
 
 # whether to save result (1 for save)
-SAVE_RESULT 0
+SAVE_RESULT 1
 
 # save directory
 SAVE_DIR    ../selfplay_logs
@@ -17,4 +17,4 @@ SAVE_DIR    ../selfplay_logs
 SAVE_START  0
 
 # number of games to play
-MAX_REPEAT  9999
+MAX_REPEAT  10
