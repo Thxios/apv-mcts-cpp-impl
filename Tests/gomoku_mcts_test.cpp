@@ -6,7 +6,6 @@
 #include <torch/torch.h>
 #include <torch/script.h>
 
-// #include "MCTS/Tree2.h"
 #include "MCTS/Param.h"
 #include "Gomoku/Board.h"
 #include "Gomoku/Evaluator.h"
@@ -74,7 +73,12 @@ int main(int argc, char *argv[]) {
     Param param(3, 5, 8);
     GomokuServer server(bd, evaluator, param);
 
-    server.Run(1000);
+    server.Run(400);
 
+    cout << "========= game done =========" << endl;
+    cout << "========= game reset =========" << endl;
+    cout << endl;
+    server.Reset(bd);
+    server.Run(400);
 }
 

@@ -26,11 +26,12 @@ namespace mcts {
         void    Play(Action action);
         Node*   GetRoot();
         Action  GetOptimalAction();
-        void    EvaluateQueue();
+        void    Reset(BaseState& init_state);
 
         friend void DebugLog(MCTS& tree);
     
     private:
+        void    EvaluateQueue();
         Node*   Select(BaseState* search_state);
         void    Backup(Node* node, Reward z);
 

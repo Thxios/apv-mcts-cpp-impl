@@ -131,7 +131,7 @@ namespace gomoku {
             out << '\n';
         }
 
-        out << "TURN: " << (".XO"[b.turn]) << " - ";
+        out << "TURN: " << b.turn_elapsed << " " << (".XO"[b.turn]) << " - ";
 
         switch (b.State()) {
         case b.ONGOING:

@@ -92,5 +92,11 @@ namespace mcts {
     Action MCTS::GetOptimalAction() {
         return root->GetOptimalAction();
     }
+
+    void MCTS::Reset(BaseState& init_state) {
+        state = init_state;
+        delete root;
+        root = new Node(1.);
+    }
 }
 

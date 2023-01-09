@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <cassert>
 
 using std::vector;
@@ -36,5 +37,7 @@ namespace gomoku {
         int32_t*    actions_ptr;
         int32_t*    counts_ptr;
     };
+
+    std::string BuildFileName(int file_no, std::string extension, int min_width=4);
 }
 

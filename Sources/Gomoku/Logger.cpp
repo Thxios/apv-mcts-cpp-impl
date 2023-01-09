@@ -18,8 +18,7 @@ namespace gomoku {
     }
 
     GomokuLog::GomokuLog(std::string load_path) {
-        std::ifstream in;
-        in.open(load_path, std::ios::in | std::ios::binary);
+        std::ifstream in(load_path, std::ios::in | std::ios::binary);
         assert(in.is_open());
 
         in.read((char*)(&header), sizeof(header));
@@ -37,8 +36,7 @@ namespace gomoku {
     }
     
     void GomokuLog::Save(std::string save_path) {
-        std::ofstream out;
-        out.open(save_path, std::ios::out | std::ios::binary);
+        std::ofstream out(save_path, std::ios::out | std::ios::binary);
         assert(out.is_open());
 
         out.write((char*)(&header), sizeof(header));
@@ -58,5 +56,19 @@ namespace gomoku {
 
         assert(board.State() == header.result);
         return board;
+    }
+
+    std::string BuildFileName(int file_no, std::string extension, int min_width) {
+        std::ostringstream os;
+        int base = 1;
+        for (int i = 1; i < min_width; i++)
+            base *= 10;
+        for (int i = 0; i < min_width; i++) {
+            os << (file_no / base);
+            file_no %= base;
+            base /= 10;
+        }
+        os << "." << extension;
+        return os.str();
     }
 }
