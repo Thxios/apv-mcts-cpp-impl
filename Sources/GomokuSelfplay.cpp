@@ -2,7 +2,6 @@
 #include <iostream>
 #include <torch/torch.h>
 #include <torch/script.h>
-using namespace std;
 
 #include "Gomoku/Server.h"
 
@@ -11,10 +10,10 @@ int main(int argc, char *argv[]) {
     gomoku::SelfplayConfig conf;
 
     if (argc < 2) {
-        cout << "using default config" << endl;
+        std::cout << "using default config" << std::endl;
     }
     else {
-        cout << "load config from " << argv[1] << endl;
+        std::cout << "load config from " << argv[1] << std::endl;
         conf = gomoku::LoadConfig(argv[1]);
     }
 

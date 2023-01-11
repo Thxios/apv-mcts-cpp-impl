@@ -34,6 +34,7 @@ namespace gomoku {
         while (!state.Terminated()) {
             std::chrono::system_clock::time_point start_time = std::chrono::system_clock::now();
 
+            tree.ApplyDirichletNoise(0.05, 0.25);
             tree.Search(computing_budget);
 
             mcts::Action action = tree.GetOptimalAction();
@@ -78,6 +79,7 @@ namespace gomoku {
         std::cout << "using config:" << std::endl;
         std::cout << "MODEL\t\t" << config.model_path << std::endl;
         std::cout << "N_SEARCH\t" << config.search_per_move << std::endl;
+        std::cout << "EVAL_BATCH\t" << config.eval_batch << std::endl;
         std::cout << "SAVE_RESULT\t" << (config.save_result ? "TRUE" : "FALSE") << std::endl;
         std::cout << "SAVE_DIR\t" << config.save_dir << std::endl;
         std::cout << "SAVE_START\t" << config.start_no << std::endl;        
@@ -95,7 +97,7 @@ namespace gomoku {
             return -1;
         }
 
-        GomokuEvaluator evaluator(model, true);
+        GomokuEvaluator evaluator(model);
         std::cout << "Evaluator ready" << std::endl;
 
         Param param(3, 5, config.eval_batch);

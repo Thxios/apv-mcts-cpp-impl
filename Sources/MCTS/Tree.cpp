@@ -7,6 +7,7 @@ namespace mcts {
     MCTS::MCTS(BaseState& init_state, BaseEvaluator& evaluator_, Param& param_)
     : state(init_state), param(param_), evaluator(evaluator_) {
         root = new Node(1.);
+        ExpandRoot();
     }
 
     MCTS::~MCTS() {
@@ -39,8 +40,26 @@ namespace mcts {
         }
         node->Update(z);
     }
+
+    void MCTS::ExpandRoot() {
+        if (!root->IsLeaf())
+            return;
+        vector<BaseState*> to_eval({&state});
+        root->Expand(evaluator.EvaluateBatch(to_eval)[0].second);
+    }
+
+    void MCTS::ApplyDirichletNoise(double alpha, double eps) {
+        if (root->IsLeaf())
+            ExpandRoot();
+
+        vector<Prob> noise = dirichet_noise.Sample(alpha, root->children.size());
+        for (int i = 0; i < root->children.size(); i++) {
+            root->children[i].second->P 
+            = (1 - eps)*root->children[i].second->P + eps*noise[i];
+        }
+    }
     
-    void MCTS::Search() {
+    void MCTS::SearchSingle() {
         std::unique_ptr<BaseState> search_state(state.GetCopy());
         Node* node = Select(search_state.get());
         if (search_state->Terminated()) {
@@ -55,7 +74,7 @@ namespace mcts {
     
     void MCTS::Search(int times) {
         for (int i = 0; i < times; i++) {
-            Search();
+            SearchSingle();
         }
         EvaluateQueue();
     }
@@ -69,7 +88,7 @@ namespace mcts {
             to_eval.push_back(state_uptr.get());
         }
         vector<pair<Reward, vector<pair<Action, Prob>>>> evaluated
-         = evaluator.EvaluateBatch(to_eval);
+        = evaluator.EvaluateBatch(to_eval);
         
         for (int i = 0; i < eval_queue.size(); i++) {
             eval_queue[i].first->Expand(evaluated[i].second);
@@ -97,6 +116,7 @@ namespace mcts {
         state = init_state;
         delete root;
         root = new Node(1.);
+        ExpandRoot();
     }
 }
 

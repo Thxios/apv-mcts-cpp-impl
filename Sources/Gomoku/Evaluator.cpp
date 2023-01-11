@@ -31,8 +31,7 @@ namespace gomoku {
         });
     }
 
-    GomokuEvaluator::GomokuEvaluator(torch::jit::script::Module& model_, bool noise)
-    : model(model_), dirichlet_noise(noise) {
+    GomokuEvaluator::GomokuEvaluator(torch::jit::script::Module& model_) : model(model_) {
         model.eval();
         cuda = torch::cuda::is_available();
         if (cuda) {
@@ -70,20 +69,11 @@ namespace gomoku {
         torch::jit::IValue out = model.forward(inputs);
 
         torch::Tensor prob_raw = torch::nn::functional::softmax(
-            out.toTuple()->elements()[0].toTensor(), 1);
-        if (dirichlet_noise) {
-            torch::Tensor noise = torch::_sample_dirichlet(
-                alpha * torch::ones({(int)states.size(), SIZE*SIZE}));
-            if (cuda)
-                noise = noise.to(torch::kCUDA);
-            prob_raw = prob_raw * (1 - epsilon) + noise * epsilon;
-        }
-        prob_raw = prob_raw * empty_plane;
+            out.toTuple()->elements()[0].toTensor(), 1) * empty_plane;
         prob_raw = (prob_raw / torch::sum(prob_raw, 1).reshape({-1, 1})).to(torch::kCPU);
         torch::Tensor result = out.toTuple()->elements()[1].toTensor().to(torch::kCPU);
         float* prob_out = prob_raw.data_ptr<float>();
         float* result_out = result.data_ptr<float>();
-
 
         vector<pair<Reward, vector<pair<Action, Prob>>>> ret;
         for (int i = 0; i < states.size(); i++) {

@@ -131,7 +131,7 @@ int main() {
     
     cout << endl << "Start Search" << endl;
     for (int i = 0; i < 5; i++) {
-        tree.Search();
+        tree.SearchSingle();
         // tree.SearchAsync();
         cout << i << " search done" << endl;
     }

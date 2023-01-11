@@ -18,7 +18,7 @@ namespace gomoku {
 
     class GomokuEvaluator : public mcts::BaseEvaluator {
     public:
-        GomokuEvaluator(torch::jit::script::Module& model_, bool noise_=false);
+        GomokuEvaluator(torch::jit::script::Module& model_);
 
         virtual vector<pair<Reward, vector<pair<Action, Prob>>>>
             EvaluateBatch(vector<BaseState*>& states);
@@ -31,9 +31,6 @@ namespace gomoku {
         torch::jit::script::Module& model;
 
         bool    cuda;
-        bool    dirichlet_noise;
-        double  alpha = 0.1;
-        double  epsilon = 0.25;
     };
 }
 

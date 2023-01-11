@@ -2,13 +2,13 @@
 MODEL       ../SZ15_NC128_NB12.pt
 
 # mcts search per move
-N_SEARCH    1200
+N_SEARCH    400
 
 # mcts eval batch size
-EVAL_BATCH  8
+EVAL_BATCH 8
 
 # whether to save result (1 for save)
-SAVE_RESULT 1
+SAVE_RESULT 0
 
 # save directory
 SAVE_DIR    ../selfplay_logs
@@ -17,4 +17,4 @@ SAVE_DIR    ../selfplay_logs
 SAVE_START  0
 
 # number of games to play
-MAX_REPEAT  10
+MAX_REPEAT  1
